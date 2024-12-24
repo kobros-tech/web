@@ -7,10 +7,13 @@
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/web",
-    "depends": ["web"],
+    "depends": ["web", "web_tour"],
     "auto_install": False,
     "installable": True,
     "maintainers": ["CarlosRoca13"],
+    "demo": [
+        "demo/demo_users_pivot_view.xml",
+    ],
     "assets": {
         "web.assets_backend": [
             "web_pivot_computed_measure/static/src/**/*.esm.js",
