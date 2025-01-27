@@ -5,8 +5,6 @@ odoo.define(
     "web_responsive.test_patch",
     ["@web_tour/tour_service/tour_utils", "@web/core/utils/patch"],
     function (require) {
-        "use strict";
-
         const {stepUtils} = require("@web_tour/tour_service/tour_utils");
         const {patch} = require("@web/core/utils/patch");
 
