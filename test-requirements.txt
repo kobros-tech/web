@@ -1,1 +1,2 @@
 odoo-test-helper
+odoo-addon-web_pivot_computed_measure@git+https://github.com/OCA/web.git@refs/pull/3038/head#subdirectory=web_pivot_computed_measure
