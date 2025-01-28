@@ -109,14 +109,30 @@ export class AppsMenuCanonicalSearchBar extends Component {
         const searchField = (item) => item.displayName;
         // Update search results paths
         for (const root in this.rootMenuItems) {
-            this.rootMenuItems[root].path =
-                `/odoo/${this.rootMenuItems[root].actionPath}`;
+            // Root is an app
+            if (this.rootMenuItems[root]?.actionPath) {
+                this.rootMenuItems[root].path =
+                    `/odoo/${this.rootMenuItems[root].actionPath}`;
+            }
+            // Root is a module
+            else {
+                this.rootMenuItems[root].path =
+                    `/odoo/action-${this.rootMenuItems[root].actionID}`;
+            }
         }
         for (const item in this.subMenuItems) {
             for (const root in this.rootMenuItems) {
                 if (this.subMenuItems[item].appID === this.rootMenuItems[root].appID) {
-                    this.subMenuItems[item].path =
-                        `/odoo/${this.rootMenuItems[root].actionPath}/action-${this.subMenuItems[item].actionID}`;
+                    // Root is an app
+                    if (this.rootMenuItems[root]?.actionPath) {
+                        this.subMenuItems[item].path =
+                            `/odoo/${this.rootMenuItems[root].actionPath}/action-${this.subMenuItems[item].actionID}`;
+                    }
+                    // Root is a module
+                    else {
+                        this.subMenuItems[item].path =
+                            `/odoo/action-${this.subMenuItems[item].actionID}`;
+                    }
                 }
             }
         }
