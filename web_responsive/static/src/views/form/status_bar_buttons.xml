@@ -6,10 +6,10 @@
 <templates>
     <t
         t-name="web_responsive.StatusBarButtons"
-        t-inherit="web.StatusBarButtons"
+        t-inherit="web.StatusBarDropdownItems"
         t-inherit-mode="extension"
     >
-        <xpath expr="//Dropdown" position="attributes">
+        <xpath expr="//DropdownItem" position="attributes">
             <attribute name="hotkey">'shift+a'</attribute>
         </xpath>
         <xpath expr="//t[@t-set-slot='toggler']" position="replace">
