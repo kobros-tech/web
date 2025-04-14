@@ -55,9 +55,9 @@ export class AppsMenu extends Component {
         this.theme = session.apps_menu.theme || "milk";
         this.menuService = useService("menu");
         browser.localStorage.setItem("redirect_menuId", "");
+
         if (user.context.is_redirect_to_home) {
-            this.router = router;
-            const menuId = Number(this.router.current.menu_id || 0);
+            const menuId = Number(router.current.menu_id || 0);
             this.state = useState({open: menuId === 0});
         }
         useBus(this.env.bus, "ACTION_MANAGER:UI-UPDATED", () => {
@@ -68,7 +68,7 @@ export class AppsMenu extends Component {
 
     setOpenState(open_state) {
         this.state.open = open_state;
-        this.env.bus.trigger("APPS_MENU:STATE_CHANGED", open_state);
+        this.env.bus.trigger("APPS_MENU:STATE_CHANGEdocumentD", open_state);
     }
 
     /**
@@ -78,97 +78,75 @@ export class AppsMenu extends Component {
         const repeatable = {
             allowRepeat: true,
         };
-        useHotkey(
-            "ArrowRight",
-            () => {
-                this._onWindowKeydown("next");
-            },
-            repeatable
-        );
-        useHotkey(
-            "ArrowLeft",
-            () => {
-                this._onWindowKeydown("prev");
-            },
-            repeatable
-        );
-        useHotkey(
-            "ArrowDown",
-            () => {
-                this._onWindowKeydown("next");
-            },
-            repeatable
-        );
-        useHotkey(
-            "ArrowUp",
-            () => {
-                this._onWindowKeydown("prev");
-            },
-            repeatable
-        );
+
+        const keyActions = [
+            {key: "ArrowRight", action: "next"},
+            {key: "ArrowLeft", action: "prev"},
+            {key: "ArrowDown", action: "next"},
+            {key: "ArrowUp", action: "prev"},
+        ];
+
+        keyActions.forEach(({key, action}) => {
+            useHotkey(
+                key,
+                () => {
+                    this._onWindowKeydown(action);
+                },
+                repeatable
+            );
+        });
+
         useHotkey("Escape", () => {
             this.env.bus.trigger("ACTION_MANAGER:UI-UPDATED");
         });
     }
 
     _onWindowKeydown(direction) {
-        const focusableInputElements = document.querySelectorAll(".o-app-menu-item");
+        const focusableInputElements = Array.from(
+            document.querySelectorAll(".o-app-menu-item")
+        );
+        const currentIndex = focusableInputElements.indexOf(document.activeElement);
+
         if (focusableInputElements.length) {
-            const focusable = [...focusableInputElements];
-            const index = focusable.indexOf(document.activeElement);
+            const lastIndex = focusableInputElements.length - 1;
+
             let nextIndex = 0;
-            if (direction === "prev" && index >= 0) {
-                if (index > 0) {
-                    nextIndex = index - 1;
-                } else {
-                    nextIndex = focusable.length - 1;
-                }
-            } else if (direction === "next") {
-                if (index + 1 < focusable.length) {
-                    nextIndex = index + 1;
-                } else {
-                    nextIndex = 0;
-                }
+            if (direction === "next") {
+                nextIndex = currentIndex < lastIndex ? currentIndex + 1 : 0;
+            } else if (direction === "prev") {
+                nextIndex = currentIndex > 0 ? currentIndex - 1 : lastIndex;
             }
+
             focusableInputElements[nextIndex].focus();
         }
     }
 
     onMenuClick() {
-        if (!user.context.is_redirect_to_home) {
-            this.setOpenState(!this.state.open);
-        } else {
-            const redirect_menuId =
-                browser.localStorage.getItem("redirect_menuId") || "";
-            if (!redirect_menuId) {
-                this.setOpenState(true);
-            } else {
-                this.setOpenState(!this.state.open);
-            }
-            const {href, hash} = location;
-            const menuId = this.router.current.menu_id;
-            if (menuId && menuId !== redirect_menuId) {
-                browser.localStorage.setItem(
-                    "redirect_menuId",
-                    this.router.current.menu_id
-                );
+        const isRedirect = user.context.is_redirect_to_home;
+        const redirectMenuId = browser.localStorage.getItem("redirect_menuId") || "";
+        const {href, hash} = location;
+
+        if (isRedirect) {
+            const shouldOpenState = !redirectMenuId || !this.state.open;
+            this.setOpenState(shouldOpenState);
+
+            const currentMenuId = router.current.menu_id;
+            if (currentMenuId && currentMenuId !== redirectMenuId) {
+                browser.localStorage.setItem("redirect_menuId", currentMenuId);
             }
 
             if (href.includes(hash)) {
                 window.history.replaceState(null, "", href.replace(hash, ""));
             }
+        } else {
+            this.setOpenState(!this.state.open);
         }
     }
 }
 
-Object.assign(AppsMenu, {
-    template: "web_responsive.AppsMenu",
-    props: {
-        slots: {
-            type: Object,
-            optional: true,
-        },
-    },
-});
+AppsMenu.template = "web_responsive.AppsMenu";
+AppsMenu.props = {
+    slots: {type: Object, optional: true},
+};
 
 Object.assign(NavBar.components, {AppsMenu, AppMenuItem, AppsMenuSearchBar});

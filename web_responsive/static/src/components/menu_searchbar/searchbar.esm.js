@@ -14,12 +14,10 @@ export class AppsMenuSearchBar extends Component {
     }
 }
 
-Object.assign(AppsMenuSearchBar, {
-    props: {},
-    template: "web_responsive.AppsMenuSearchBar",
-    components: {
-        AppsMenuOdooSearchBar,
-        AppsMenuCanonicalSearchBar,
-        AppsMenuFuseSearchBar,
-    },
-});
+AppsMenuSearchBar.props = {};
+AppsMenuSearchBar.template = "web_responsive.AppsMenuSearchBar";
+AppsMenuSearchBar.components = {
+    AppsMenuOdooSearchBar,
+    AppsMenuCanonicalSearchBar,
+    AppsMenuFuseSearchBar,
+};

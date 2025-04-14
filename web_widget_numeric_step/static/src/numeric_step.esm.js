@@ -6,9 +6,6 @@ import {FloatField} from "@web/views/fields/float/float_field";
 import {standardFieldProps} from "@web/views/fields/standard_field_props";
 
 export class NumericStep extends FloatField {
-    setup() {
-        super.setup();
-    }
     _onStepClick(ev) {
         const mode = ev.target.dataset.mode;
         this._doStep(mode);

@@ -32,6 +32,7 @@ export function minMaxCollector(delay = 100) {
             clearTimeout(state.id);
             state.items.push(value);
             state.id = setTimeout(() => {
+                /* eslint-disable-next-line callback-return */
                 callback(min(), max());
                 state.items = [];
                 state.id = null;

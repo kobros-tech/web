@@ -6,7 +6,11 @@
      License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
 <templates>
     <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension">
-        <xpath expr="//Dropdown" position="replace">
+        <xpath expr="//Dropdown/button" position="attributes">
+            <attribute name="class">o_navbar_apps_menu hide</attribute>
+            <attribute name="data-hotkey">shift+h</attribute>
+        </xpath>
+        <xpath expr="//Dropdown" position="after">
             <AppsMenu>
                 <t t-set-slot="search_bar">
                     <AppsMenuSearchBar />
@@ -18,25 +22,9 @@
                     app="app"
                     currentApp="currentApp"
                     href="getMenuItemHref(app)"
-                    onClick="onNavBarDropdownItemSelection.bind(this)"
+                    onClick.bind="onNavBarDropdownItemSelection"
                 />
             </AppsMenu>
-            <div style="visibility: hidden;">
-                <button data-hotkey="h" title="Home Menu">
-                    <i class="oi oi-apps" />
-                </button>
-                <t t-set-slot="content">
-                    <DropdownItem
-                        t-foreach="apps"
-                        t-as="app"
-                        t-key="app.id"
-                        class="{ 'o_app': true, focus: menuService.getCurrentApp() === app }"
-                        onSelected="() => this.onNavBarDropdownItemSelection(app)"
-                        t-esc="app.name"
-                        attrs="{ href: getMenuItemHref(app), 'data-menu-xmlid': app.xmlid, 'data-section': app.id }"
-                    />
-                </t>
-            </div>
         </xpath>
     </t>
 
@@ -46,7 +34,7 @@
             <button
                 class="o_grid_apps_menu__button"
                 title="Home Menu"
-                data-hotkey="shift+h"
+                data-hotkey="h"
                 t-on-click.stop="onMenuClick"
             >
                 <i class="oi oi-apps fs-4" />
